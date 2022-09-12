@@ -1,18 +1,25 @@
 const cors = require("cors");
 const express = require("express");
 const { auth } = require("express-oauth2-jwt-bearer");
+
 require("dotenv").config();
 
 // import routers
+const TripsRouter = require("./routers/tripsRouter");
 
 // import controllers
+const TripsController = require("./controllers/tripsController");
 
 // import DB
 const db = require("./db/models/index");
 
+const { user, trip, packinglist, packingitem, user_trip } = db;
+
 // initialize controllers
+const tripsController = new TripsController(trip, user);
 
 // initialize routers
+const tripsRouter = new TripsRouter(tripsController).routes();
 
 const PORT = process.env.PORT;
 const app = express();
@@ -22,6 +29,8 @@ app.use(cors());
 
 // Enable reading JSON request bodies
 app.use(express.json());
+
+app.use("/trips", tripsRouter);
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);
