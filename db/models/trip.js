@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsToMany(models.user, {
         through: "user_trips",
       });
+      this.hasMany(models.packinglist);
     }
   }
   Trip.init(

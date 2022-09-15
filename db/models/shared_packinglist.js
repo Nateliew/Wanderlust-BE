@@ -1,24 +1,21 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class User_Trip extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  class Shared_Packinglist extends Model {
     static associate(models) {
       // define association here
-      this.belongsTo(models.user);
-      this.belongsTo(models.trip);
+      this.belongsTo(models.packinglist_packingitem);
+      this.belongsTo(models.user, {
+        foreignKey: "item_owner",
+      });
     }
   }
-  User_Trip.init(
+  Shared_Packinglist.init(
     {
-      tripId: {
+      packinglist_packingitem_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: "trips",
+          model: "packinglist_packingitems",
           key: "id",
         },
       },
@@ -32,9 +29,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "user_trip",
+      modelName: "shared_packinglist",
       underscored: true,
     }
   );
-  return User_Trip;
+  return Shared_Packinglist;
 };

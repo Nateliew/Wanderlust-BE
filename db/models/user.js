@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsToMany(models.trip, {
         through: "user_trips",
       });
+      this.hasOne(models.shared_packinglist);
     }
   }
   User.init(

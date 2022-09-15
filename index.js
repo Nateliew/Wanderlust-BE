@@ -15,10 +15,16 @@ const PackItemsController = require("./controllers/packItemsController");
 // import DB
 const db = require("./db/models/index");
 
-const { user, trip, packinglist, packingitem, user_trip } = db;
+const { user, trip, packinglist, packingitem, user_trip, shared_packinglist } =
+  db;
 
 // initialize controllers
-const tripsController = new TripsController(trip, user);
+const tripsController = new TripsController(
+  trip,
+  user,
+  packinglist,
+  packingitem
+);
 const packItemsController = new PackItemsController(packingitem);
 
 // initialize routers
@@ -35,7 +41,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/trips", tripsRouter);
-app.use("/pack-items", packItemsRouter);
+app.use("/packing-items", packItemsRouter);
+//app.user(/users, usersRouter)
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);

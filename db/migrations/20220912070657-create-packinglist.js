@@ -22,19 +22,6 @@ module.exports = {
           key: "id",
         },
       },
-      quantity: {
-        type: Sequelize.INTEGER,
-      },
-      item: {
-        type: Sequelize.STRING,
-      },
-      item_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "packingitems",
-          key: "id",
-        },
-      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,

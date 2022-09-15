@@ -4,6 +4,13 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert("users", [
       {
+        first_name: "shared",
+        last_name: "user",
+        email: "shared@shared.com",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
         first_name: "John",
         last_name: "Doe",
         email: "john@john.com",
@@ -43,34 +50,13 @@ module.exports = {
         updated_at: new Date(),
       },
     ]);
-    await queryInterface.bulkInsert("packingitems", [
-      {
-        item: "top",
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-      {
-        item: "bottoms",
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-      {
-        item: "sunglasses",
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-      {
-        item: "phone charger",
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-      {
-        item: "passport",
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-    ]);
     await queryInterface.bulkInsert("user_trips", [
+      {
+        user_id: 1,
+        trip_id: 1,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
       {
         user_id: 1,
         trip_id: 2,
@@ -89,6 +75,12 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
       },
+      {
+        user_id: 4,
+        trip_id: 1,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
     ]);
   },
 
@@ -96,6 +88,6 @@ module.exports = {
     await queryInterface.bulkDelete("trips", null, {});
     await queryInterface.bulkDelete("users", null, {});
     await queryInterface.bulkDelete("packingitems", null, {});
-    await queryInterface.bulkDelete("user_trips", null, {});
+    // await queryInterface.bulkDelete("user_trips", null, {});
   },
 };

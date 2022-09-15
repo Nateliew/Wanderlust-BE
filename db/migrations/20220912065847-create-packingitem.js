@@ -8,7 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      item: {
+      item_name: {
+        type: Sequelize.STRING,
+      },
+      category: {
         type: Sequelize.STRING,
       },
       created_at: {
