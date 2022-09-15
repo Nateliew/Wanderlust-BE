@@ -6,39 +6,27 @@ class TripsController extends BaseController {
     this.userModel = userModel;
   }
 
-  // get all trips belonging to a user
+  // Retrieve specific sighting
   async getAll(req, res) {
-    const { userId } = req.body;
     try {
-      const trips = await this.model.findAll({
-        include: [
-          {
-            model: this.userModel,
-            through: { attributes: [] },
-            where: {
-              id: userId,
-            },
-          },
-        ],
-      });
-      return res.json(trips);
+      const output = await this.model.findAll();
+      return res.json(output);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
   }
 
-  async getOne(req, res) {
-    const { tripId } = req.body;
+  async insertOne(req, res) {
+    const { country, startDate, endDate, duration } = req.body;
     try {
-      const trip = await this.model.findByPk(tripId, {
-        include: [
-          {
-            model: this.userModel,
-            through: { attributes: [] },
-          },
-        ],
+      // Create new sighting
+      const newTrip = await this.model.create({
+        country: country,
+        startDate: startDate,
+        endDate: endDate,
+        duration: duration,
       });
-      return res.json(trip);
+      return res.json(newTrip);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
