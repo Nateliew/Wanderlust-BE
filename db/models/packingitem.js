@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
   Packingitem.init(
     {
       itemName: DataTypes.STRING,
-
       category: DataTypes.STRING,
     },
     {
