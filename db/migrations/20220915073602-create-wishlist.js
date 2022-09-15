@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("packinglists", {
+    await queryInterface.createTable("wishlists", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -15,25 +15,20 @@ module.exports = {
           key: "id",
         },
       },
-      user_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "users",
-          key: "id",
-        },
-      },
-      quantity: {
-        type: Sequelize.INTEGER,
-      },
-      item: {
+      place_name: {
         type: Sequelize.STRING,
       },
-      item_id: {
+      description: {
+        type: Sequelize.STRING,
+      },
+      recommendation: {
+        type: Sequelize.STRING,
+      },
+      category: {
+        type: Sequelize.STRING,
+      },
+      duration: {
         type: Sequelize.INTEGER,
-        references: {
-          model: "packingitems",
-          key: "id",
-        },
       },
       created_at: {
         allowNull: false,
@@ -46,6 +41,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("packinglists");
+    await queryInterface.dropTable("Wishlists");
   },
 };

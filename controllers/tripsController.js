@@ -6,8 +6,8 @@ class TripsController extends BaseController {
     this.userModel = userModel;
   }
 
-  // get all trips belonging to a user
-  async getAll(req, res) {
+  // CRUD functions for trips belonging to a user
+  async getAllTrips(req, res) {
     const { userId } = req.body;
     try {
       const trips = await this.model.findAll({
@@ -27,7 +27,7 @@ class TripsController extends BaseController {
     }
   }
 
-  async getOne(req, res) {
+  async getOneTrip(req, res) {
     const { tripId } = req.body;
     try {
       const trip = await this.model.findByPk(tripId, {
@@ -43,6 +43,15 @@ class TripsController extends BaseController {
       return res.status(400).json({ error: true, msg: err });
     }
   }
+
+  // CRUD functions for trips belonging to a user
+  async getAllPackItems(req, res) {}
+  //CRUD for wishlist
+  async getAllWishlistItems(req, res) {}
+  //CRUD for calendar
+  async getAllCalendarItems(req, res) {}
+  //CRUD for comments
+  async getAllComments(req, res) {}
 }
 
 module.exports = TripsController;
