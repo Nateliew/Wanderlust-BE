@@ -8,7 +8,7 @@ class UsersRouter {
 
   routes() {
     router.get("/", this.controller.getAll.bind(this.controller));
-    router.get("/:userId", this.controller.getOne.bind(this.controller));
+    // router.get("/:userId", this.controller.getOne.bind(this.controller));
 
     return router;
   }

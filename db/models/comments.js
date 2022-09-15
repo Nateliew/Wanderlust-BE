@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
-      text: DataTypes.String,
+      text: DataTypes.STRING,
       trip_id: {
         type: DataTypes.INTEGER,
         references: {
