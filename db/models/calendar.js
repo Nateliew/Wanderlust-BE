@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Packinglist_Packingitem extends Model {
+  class Calendar extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,36 +9,33 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsToMany(models.packinglist);
-      this.belongsToMany(models.packingitems);
-      this.hasOne(models.shared_packinglist);
+      this.belongsTo(models.trip);
+      this.hasOne(models.wishlist);
     }
   }
-  Packinglist_Packingitem.init(
+  Calendar.init(
     {
-      packinglist_id: {
+      wishlist_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: "packinglists",
+          model: "wishlists",
           key: "id",
         },
       },
-      packingitem_id: {
+      trip_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: "packingitems",
+          model: "trips",
           key: "id",
         },
       },
-      quantity: {
-        type: DataTypes.INTEGER,
-      },
+      start_datetime: DataTypes.DATE,
     },
     {
       sequelize,
-      modelName: "packinglist_packingitem",
+      modelName: "calendar",
       underscored: true,
     }
   );
-  return Packinglist_Packingitem;
+  return Calendar;
 };

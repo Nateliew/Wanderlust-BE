@@ -2,61 +2,28 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("packinglist_packingitems", {
+    await queryInterface.createTable("comments", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      packinglist_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "packinglists",
-          key: "id",
-        },
-      },
-      packingitem_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "packingitems",
-          key: "id",
-        },
-      },
-      quantity: {
-        type: Sequelize.INTEGER,
-      },
-      created_at: {
-        allowNull: false,
-        type: Sequelize.DATE,
-      },
-      updated_at: {
-        allowNull: false,
-        type: Sequelize.DATE,
-      },
-    });
-
-    await queryInterface.createTable("shared_packinglists", {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
-      packinglist_packingitem_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "packinglists",
-          key: "id",
-        },
-      },
-      item_owner: {
+      user_id: {
         type: Sequelize.INTEGER,
         references: {
           model: "users",
           key: "id",
         },
       },
+      text: Sequelize.STRING,
+      trip_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "trips",
+          key: "id",
+        },
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -66,10 +33,42 @@ module.exports = {
         type: Sequelize.DATE,
       },
     });
+
+    await queryInterface.createTable("calendar", {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
+      },
+      trip_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "trips",
+          key: "id",
+        },
+      },
+      created_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updated_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      start_datetime: Sequelize.DATE,
+      wishlist_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "wishlists",
+          key: "id",
+        },
+      },
+    });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("packinglist_packingitems");
-    await queryInterface.dropTable("shared_packinglists");
+    await queryInterface.dropTable("comments");
+    await queryInterface.dropTable("calendar");
   },
 };

@@ -101,6 +101,13 @@ class TripsController extends BaseController {
   async editPackItem(req, res) {}
 
   async removePackItem(req, res) {}
+
+//CRUD for wishlist
+  async getAllWishlistItems(req, res) {}
+  //CRUD for calendar
+  async getAllCalendarItems(req, res) {}
+  //CRUD for comments
+  async getAllComments(req, res) {}
 }
 
 module.exports = TripsController;

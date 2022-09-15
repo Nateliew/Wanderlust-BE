@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsToMany(models.user, {
         through: "user_trips",
       });
-      this.hasMany(models.packinglist);
+      this.hasOne(models.wishlist);
     }
   }
   Trip.init(

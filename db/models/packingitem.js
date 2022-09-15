@@ -8,15 +8,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.belongsToMany(models.packinglist, {
-        through: "packinglist_packingitems",
-      });
+      // define association here
     }
   }
   Packingitem.init(
     {
-      item: DataTypes.STRING,
-
+      itemName: DataTypes.STRING,
       category: DataTypes.STRING,
     },
     {

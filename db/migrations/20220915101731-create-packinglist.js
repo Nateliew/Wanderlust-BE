@@ -8,17 +8,33 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      trip_id: {
+      item_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: "trips",
+          model: "packingitems",
           key: "id",
         },
+      },
+      quantity: {
+        type: Sequelize.INTEGER,
+      },
+      bag_type: {
+        type: Sequelize.STRING,
+      },
+      shared_item: {
+        type: Sequelize.BOOLEAN,
       },
       user_id: {
         type: Sequelize.INTEGER,
         references: {
           model: "users",
+          key: "id",
+        },
+      },
+      trip_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "trips",
           key: "id",
         },
       },
