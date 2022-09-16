@@ -66,7 +66,7 @@ class TripsController extends BaseController {
   }
 
   async addPackItem(req, res) {
-    //structure of itemsList: {itemId, quantity, bagType, sharedItem, userId, tripId}
+    //structure of itemsList: array of objects - {itemId, quantity, bagType, sharedItem, userId, tripId}
     const { itemsList } = req.body;
     try {
       const newList = await this.tripItemModel.bulkCreate([itemsList]);
@@ -76,9 +76,49 @@ class TripsController extends BaseController {
     }
   }
 
-  async editPackItem(req, res) {}
+  async editPackItem(req, res) {
+    // structure of tripItems: array of objects - {tripItemId, quantity, bagType, sharedItem, userId, tripId }
+    const { tripItems } = req.body;
 
-  async removePackItem(req, res) {}
+    try {
+      tripItems.forEach(async (tripItemRow) => {
+        const tripItem = await this.tripItemModel.findByPk(
+          tripItemRow.tripItemId
+        );
+        tripItem.set({
+          quantity: tripItemRow.quantity,
+          bagType: tripItemRow.bagType,
+          sharedItem: tripItemRow.sharedItem,
+          userId: tripItemRow.userId,
+        });
+        await tripItem.save();
+      });
+      return res.json();
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
+
+  async removePackItem(req, res) {
+    // tripItemIds is an array of tripItemsPK
+    const { tripItemIds } = req.body;
+    console.log(tripItemIds);
+
+    try {
+      const tripItems = await this.tripItemModel.destroy({
+        where: {
+          id: tripItemIds,
+        },
+      });
+
+      // returned tripItems is an integer of total rows deleted
+      return res.json(tripItems);
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
 
   //CRUD for wishlist
   async getAllWishlistItems(req, res) {}
