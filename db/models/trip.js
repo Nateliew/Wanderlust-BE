@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
         through: "user_trips",
       });
       this.hasOne(models.wishlist);
+      this.belongsToMany(models.item, {
+        through: "trip_items",
+      });
     }
   }
   Trip.init(

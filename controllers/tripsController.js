@@ -1,11 +1,12 @@
 const BaseController = require("./baseController");
 
 class TripsController extends BaseController {
-  constructor(model, userModel, packingListModel, packingItemModel) {
+  constructor(model, userModel, userTripModel, itemModel, tripItemModel) {
     super(model);
     this.userModel = userModel;
-    this.packingListModel = packingListModel;
-    this.packingItemModel = packingItemModel;
+    this.userTripModel = userTripModel;
+    this.itemModel = itemModel;
+    this.tripItemModel = tripItemModel;
   }
 
   // CRUD for all trips belonging to a user
@@ -52,7 +53,7 @@ class TripsController extends BaseController {
     const { tripId } = req.params;
     const { userId } = req.body;
     try {
-      const items = await this.packingListModel.findAll({
+      const items = await this.tripItemModel.findAll({
         where: {
           tripId: tripId,
           userId: userId,
@@ -65,44 +66,21 @@ class TripsController extends BaseController {
   }
 
   async addPackItem(req, res) {
-    // const { itemAndQty, tripId, userId } = req.body;
-
+    //structure of itemsList: {itemId, quantity, bagType, sharedItem, userId, tripId}
+    const { itemsList } = req.body;
     try {
-      // const newItems = itemAndQty.map((item) => {
-      //   return {
-      //     tripId: tripId,
-      //     userId: userId,
-      //   };
-      // });
-
-      // const itemIds = itemAndQty.map((item) => item["itemId"]);
-
-      // const newList = await this.packingListModel.create(newItems);
-
-      const newList = await this.packingListModel.create({
-        tripId: 2,
-        userId: 2,
-        itemId: 1,
-        quantity: 4,
-      });
-      console.log(newList);
-
-      // const selectedItems = await this.packingItemModel.findAll({
-      //   where: {
-      //     id: itemIds,
-      //   },
-      // });
-      // console.log(selectedItems);
-      // newList.setPackingItems(selectedItems);
-      // return res.json(newList);
-    } catch {}
+      const newList = await this.tripItemModel.bulkCreate([itemsList]);
+      return res.json(newList);
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: err });
+    }
   }
 
   async editPackItem(req, res) {}
 
   async removePackItem(req, res) {}
 
-//CRUD for wishlist
+  //CRUD for wishlist
   async getAllWishlistItems(req, res) {}
   //CRUD for calendar
   async getAllCalendarItems(req, res) {}

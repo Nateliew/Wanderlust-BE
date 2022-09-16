@@ -17,19 +17,21 @@ const UsersController = require("./controllers/usersController");
 // import DB
 const db = require("./db/models/index");
 
-const { user, trip, packingitem, user_trip, comment, wishlist, calendar } = db;
+const { user, trip, user_trip, item, trip_item, comment, wishlist, calendar } =
+  db;
 
 // initialize controllers
 const tripsController = new TripsController(
   trip,
   user,
-  packingitem,
   user_trip,
+  item,
+  trip_item,
   comment,
   wishlist,
   calendar
 );
-const packItemsController = new PackItemsController(packingitem);
+const packItemsController = new PackItemsController(item);
 const usersController = new UsersController(user);
 
 // initialize routers
@@ -47,7 +49,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/trips", tripsRouter);
-app.use("/pack-items", packItemsRouter);
+app.use("/items-catalog", packItemsRouter);
 app.use("/users", usersRouter);
 
 app.listen(PORT, () => {
