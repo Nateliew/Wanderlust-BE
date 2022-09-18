@@ -12,7 +12,7 @@ class TripsRouter {
     // CRUD routes for overarching trip
     router.get("/", this.controller.getAllTrips.bind(this.controller));
     router.post("/", this.controller.insertOneTrip.bind(this.controller));
-    router.delete("/", this.controller.deleteTrip.bind(this.controller));
+    router.delete("/:tripId", this.controller.deleteTrip.bind(this.controller));
 
     // delete trip DELETE
 

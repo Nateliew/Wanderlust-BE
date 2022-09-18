@@ -17,31 +17,31 @@ class TripsController extends BaseController {
     }
   }
 
-  // get all trips belonging to a user
-  async getUserTrip(req, res) {
-    try {
-      const trips = await this.userTripModel.findAll({
-        include: [
-          {
-            model: this.userTripModel,
-            through: { attributes: [] },
-            // where: {
-            //   id: userId,
-            // },
-          },
-        ],
-      });
-      return res.json(trips);
-    } catch (err) {
-      return res.status(400).json({ error: true, msg: err });
-    }
-  }
+  // // get all trips belonging to a user
+  // async getUserTrip(req, res) {
+  //   try {
+  //     const trips = await this.userTripModel.findAll({
+  //       include: [
+  //         {
+  //           model: this.userTripModel,
+  //           through: { attributes: [] },
+  //           // where: {
+  //           //   id: userId,
+  //           // },
+  //         },
+  //       ],
+  //     });
+  //     return res.json(trips);
+  //   } catch (err) {
+  //     return res.status(400).json({ error: true, msg: err });
+  //   }
+  // }
 
   async insertOneTrip(req, res) {
     const { country, startDate, endDate, duration, userId } = req.body;
-    userId = 1;
+    console.log(req.body);
     try {
-      // Create new sighting
+      // Create new trip
       const newTrip = await this.model.create({
         country: country,
         startDate: startDate,
@@ -49,7 +49,18 @@ class TripsController extends BaseController {
         duration: duration,
         userId: userId,
       });
-      return res.json(newTrip);
+
+      // create user trip
+      const newUserTrip = await this.userTripModel.create({
+        userId: userId,
+        tripId: newTrip.id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+
+      return res.json({
+        id: newTrip.id,
+      });
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
@@ -73,13 +84,21 @@ class TripsController extends BaseController {
   }
 
   async deleteTrip(req, res) {
-    const { tripId } = req.body;
+    const { tripId } = req.params;
+    console.log(req.body);
     try {
-      return !!(await this.model.destroy({
+      console.log("deleting trip by id", tripId);
+      let resUserTrips = await this.userTripModel.destroy({
         where: {
-          id: tripId,
+          tripId: Number(tripId),
         },
-      }));
+      });
+      let res = await this.model.destroy({
+        where: {
+          id: Number(tripId),
+        },
+      });
+      console.log(res);
     } catch (e) {
       return false;
     }

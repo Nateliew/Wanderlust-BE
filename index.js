@@ -23,14 +23,13 @@ const { user, trip, packingitem, user_trip, comment, wishlist, calendar } = db;
 const tripsController = new TripsController(
   trip,
   user,
-  packingitem,
   user_trip,
   comment,
   wishlist,
   calendar
 );
 const packItemsController = new PackItemsController(packingitem);
-const usersController = new UsersController(user);
+const usersController = new UsersController(user, user_trip);
 
 // initialize routers
 const tripsRouter = new TripsRouter(tripsController).routes();
