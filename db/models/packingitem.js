@@ -7,17 +7,17 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // define association here
-    }
+    static associate(models) {}
   }
   Packingitem.init(
     {
-      item: DataTypes.STRING,
+      itemName: DataTypes.STRING,
+      category: DataTypes.STRING,
     },
     {
       sequelize,
       modelName: "packingitem",
+      underscored: true,
     }
   );
   return Packingitem;
