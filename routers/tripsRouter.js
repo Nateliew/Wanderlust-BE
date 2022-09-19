@@ -18,7 +18,7 @@ class TripsRouter {
 
     router.patch("/:tripId", this.controller.updateTrip.bind(this.controller));
     router.get("/:tripId", this.controller.getOneTrip.bind(this.controller));
-    router.get("/:user", this.controller.getUserTrip.bind(this.controller));
+    // router.get("/:user", this.controller.getUserTrip.bind(this.controller));
     // edit trip : PUT
 
     //CRUD for packing list

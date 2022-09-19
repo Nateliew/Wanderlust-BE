@@ -9,8 +9,15 @@ class TripsController extends BaseController {
 
   // CRUD functions for trips belonging to a user
   async getAllTrips(req, res) {
+    const { userId } = req.body;
     try {
-      const output = await this.model.findAll();
+      const output = await this.model.findAll({
+        model: this.userTripModel,
+        through: { attributes: [] },
+        where: {
+          id: userId,
+        },
+      });
       return res.json(output);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
@@ -104,6 +111,7 @@ class TripsController extends BaseController {
     }
   }
 
+  //example
   async updateTrip(req, res) {
     try {
       await this.model
