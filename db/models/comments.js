@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Comment.init(
     {
-      user_id: {
+      trip_id: {
         type: DataTypes.INTEGER,
         references: {
           model: "users",
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       text: DataTypes.STRING,
-      trip_id: {
+      user_id: {
         type: DataTypes.INTEGER,
         references: {
           model: "trips",

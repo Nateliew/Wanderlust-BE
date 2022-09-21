@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         through: "user_trip",
       });
       this.hasOne(models.wishlist);
+      this.hasMany(models.comment);
     }
   }
   Trip.init(
@@ -22,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       startDate: DataTypes.DATE,
       endDate: DataTypes.DATE,
       duration: DataTypes.INTEGER,
-      userId: DataTypes.INTEGER,
+      // userId: DataTypes.INTEGER,
     },
     {
       sequelize,

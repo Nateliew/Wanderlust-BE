@@ -1,52 +1,37 @@
 const BaseController = require("./baseController");
 
 class TripsController extends BaseController {
-  constructor(model, userModel, userTripModel) {
+  constructor(model, userModel, userTripModel, commentModel) {
     super(model);
     this.userTripModel = userTripModel;
     this.userModel = userModel;
+    this.commentModel = commentModel;
   }
 
   // CRUD functions for trips belonging to a user
   async getAllTrips(req, res) {
-    const { userId } = req.body;
+    const { userId } = req.params;
     try {
-      const output = await this.model.findAll({
-        model: this.userTripModel,
-        through: { attributes: [] },
-        where: {
-          id: userId,
-        },
+      const trips = await this.model.findAll({
+        include: [
+          {
+            model: this.userModel,
+            where: {
+              id: userId,
+            },
+            through: { attributes: [] },
+          },
+        ],
       });
-      return res.json(output);
+
+      return res.json(trips);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
   }
 
-  // // get all trips belonging to a user
-  // async getUserTrip(req, res) {
-  //   try {
-  //     const trips = await this.userTripModel.findAll({
-  //       include: [
-  //         {
-  //           model: this.userTripModel,
-  //           through: { attributes: [] },
-  //           // where: {
-  //           //   id: userId,
-  //           // },
-  //         },
-  //       ],
-  //     });
-  //     return res.json(trips);
-  //   } catch (err) {
-  //     return res.status(400).json({ error: true, msg: err });
-  //   }
-  // }
-
   async insertOneTrip(req, res) {
     const { country, startDate, endDate, duration, userId } = req.body;
-    console.log(req.body);
     try {
       // Create new trip
       const newTrip = await this.model.create({
@@ -54,7 +39,7 @@ class TripsController extends BaseController {
         startDate: startDate,
         endDate: endDate,
         duration: duration,
-        userId: userId,
+        // userId: userId,
       });
 
       // create user trip
@@ -74,7 +59,7 @@ class TripsController extends BaseController {
   }
 
   async getOneTrip(req, res) {
-    const { tripId } = req.body;
+    const { tripId } = req.params;
     try {
       const trip = await this.model.findByPk(tripId, {
         include: [
@@ -111,37 +96,69 @@ class TripsController extends BaseController {
     }
   }
 
-  //example
-  async updateTrip(req, res) {
+  //////COMMENTS HERE
+
+  //CRUD for comments
+  async addComment(req, res) {
+    console.log("AddComment", req.params);
+    const { tripId } = req.params;
+    const { user_id, content } = req.body;
     try {
-      await this.model
-        .update(req.body, {
-          where: {
-            id: req.body.id,
-          },
-        })
-        .then((result) => {
-          // check the first element in the array if there are rows affected
-          if (result[0] > 0) {
-            res.status(200).send({ message: "data found" });
-          } else {
-            return res.status(422).send({ message: "no data found" });
-          }
-        });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).send({ message: "updating table failed" });
+      const newComment = await this.commentModel.create({
+        text: content,
+        trip_id: tripId,
+        user_id: user_id,
+      });
+      return res.json(newComment);
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: err });
     }
   }
 
-  // CRUD functions for trips belonging to a user
-  async getAllPackItems(req, res) {}
-  //CRUD for wishlist
-  async getAllWishlistItems(req, res) {}
-  //CRUD for calendar
-  async getAllCalendarItems(req, res) {}
-  //CRUD for comments
-  async getAllComments(req, res) {}
+  async getAllComments(req, res) {
+    const { tripId } = req.params;
+    try {
+      const comments = await this.commentModel.findAll({
+        where: {
+          tripId: Number(tripId),
+        },
+      });
+      return res.json(comments);
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
+
+  async deleteComment(req, res) {
+    const { commentId } = req.body;
+    console.log(req.body);
+    console.log(commentId);
+    try {
+      let res = await this.commentModel.destroy({
+        where: {
+          id: Number(commentId),
+        },
+      });
+      console.log(res);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // async updateComment(req, res) {
+  //   const { trip_id } = req.params;
+  //   const { user_id, content } = req.body;
+  //   try {
+  //     const newComment = await this.commentModel.create({
+  //       text: content,
+  //       trip_id: trip_id,
+  //       user_id: user_id,
+  //     });
+  //     return res.json(newComment);
+  //   } catch (err) {
+  //     return res.status(400).json({ error: true, msg: err });
+  //   }
+  // }
 }
 
 module.exports = TripsController;
