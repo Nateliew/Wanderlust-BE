@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.user);
       this.belongsTo(models.trip);
+      this.belongsTo(models.user);
     }
   }
   Comment.init(
