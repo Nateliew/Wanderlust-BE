@@ -39,6 +39,8 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
+      itemUid: DataTypes.STRING,
+      columnIndex: DataTypes.INTEGER,
     },
     {
       sequelize,

@@ -11,7 +11,7 @@ class TripsController extends BaseController {
 
   // CRUD for all trips belonging to a user
   async getAllTrips(req, res) {
-    const { userId } = req.body;
+    const { userId } = req.params;
     try {
       const trips = await this.model.findAll({
         include: [
@@ -31,7 +31,7 @@ class TripsController extends BaseController {
   }
 
   async getOneTrip(req, res) {
-    const { tripId } = req.params;
+    const { tripId, userId } = req.params;
     try {
       const trip = await this.model.findByPk(tripId, {
         include: [
@@ -49,16 +49,48 @@ class TripsController extends BaseController {
 
   // CRUD for all packing list items belonging to a user
   async getAllPackItems(req, res) {
-    console.log(req.params);
-    const { tripId } = req.params;
-    const { userId } = req.body;
+    const { tripId, userId } = req.params;
     try {
       const items = await this.tripItemModel.findAll({
         where: {
           tripId: tripId,
           userId: userId,
         },
+        raw: true,
       });
+
+      // DO FOR LOOP TO MAKE INTO COLUMNS DATA STRUCTURE
+      //   "bagType": {
+      //     id: "bagType",
+      //     itemsUids: ["abc"],
+      //   },
+      // console.log("ITEMS:", items);
+      const columnData = {};
+
+      for (let itemRow of items) {
+        console.log("itemRow", itemRow.bagType);
+        console.log("itemUid", itemRow.itemUid);
+        if (columnData[itemRow.bagType]) {
+          console.log("did this run?");
+          columnData[itemRow.bagType] = {
+            ...columnData[itemRow.bagType],
+            id: itemRow.bagType,
+            itemsUids: [
+              ...columnData[itemRow.bagType].itemsUids,
+              itemRow.itemUid,
+            ],
+          };
+        } else {
+          console.log("or did this run?");
+          columnData[itemRow.bagType] = {
+            id: itemRow.bagType,
+            itemsUids: [itemRow.itemUid],
+          };
+        }
+      }
+
+      console.log("columndata", columnData);
+      // console.log("ITEMS:", items);
       return res.json(items);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
@@ -67,9 +99,21 @@ class TripsController extends BaseController {
 
   async addPackItem(req, res) {
     //structure of itemsList: array of objects - {itemId, quantity, bagType, sharedItem, userId, tripId}
-    const { itemsList } = req.body;
+    const { tripId, userId } = req.params;
+    const { itemId, quantity, bagType, sharedItem, itemUid, columnIndex } =
+      req.body;
+    console.log(req.body);
     try {
-      const newList = await this.tripItemModel.bulkCreate([itemsList]);
+      const newList = await this.tripItemModel.create({
+        itemId: itemId,
+        quantity: quantity,
+        bagType: bagType,
+        sharedItem: false,
+        userId: userId,
+        tripId: tripId,
+        itemUid: itemUid,
+        columnIndex: columnIndex,
+      });
       return res.json(newList);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
