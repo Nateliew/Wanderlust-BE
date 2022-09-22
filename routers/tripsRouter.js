@@ -10,7 +10,10 @@ class TripsRouter {
     router.get("/", this.controller.getAll.bind(this.controller));
 
     // CRUD routes for trip
-
+    router.get(
+      "/user/:userId",
+      this.controller.getAllTrips.bind(this.controller)
+    );
     router.post("/", this.controller.insertOneTrip.bind(this.controller));
     router.delete("/:tripId", this.controller.deleteTrip.bind(this.controller));
 
@@ -35,11 +38,6 @@ class TripsRouter {
     router.delete(
       "/:tripId/comments",
       this.controller.deleteComment.bind(this.controller)
-    );
-
-    router.get(
-      "/user/:userId",
-      this.controller.getAllTrips.bind(this.controller)
     );
 
     return router;

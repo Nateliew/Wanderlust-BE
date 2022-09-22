@@ -69,6 +69,7 @@ class TripsController extends BaseController {
           },
         ],
       });
+      console.log(trip);
       return res.json(trip);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
