@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
         through: "user_trip",
       });
       this.hasOne(models.wishlist);
+
       this.hasMany(models.comment);
+
+      this.belongsToMany(models.item, {
+        through: "trip_items",
+      });
     }
   }
   Trip.init(

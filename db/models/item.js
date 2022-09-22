@@ -1,24 +1,29 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Packingitem extends Model {
+  class Item extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {}
+    static associate(models) {
+      // define association here
+      this.belongsToMany(models.trip, {
+        through: "trip_items",
+      });
+    }
   }
-  Packingitem.init(
+  Item.init(
     {
       itemName: DataTypes.STRING,
       category: DataTypes.STRING,
     },
     {
       sequelize,
-      modelName: "packingitem",
+      modelName: "item",
       underscored: true,
     }
   );
-  return Packingitem;
+  return Item;
 };

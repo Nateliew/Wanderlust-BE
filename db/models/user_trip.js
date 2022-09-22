@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class User_trip extends Model {
+  class User_Trip extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.trip);
     }
   }
-  User_trip.init(
+  User_Trip.init(
     {
       tripId: {
         type: DataTypes.INTEGER,
@@ -36,5 +36,5 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true,
     }
   );
-  return User_trip;
+  return User_Trip;
 };
