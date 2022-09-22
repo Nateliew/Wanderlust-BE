@@ -56,7 +56,7 @@ class TripsRouter {
 
     //CRUD for comments
     router.get(
-      "/:tripId/users/:userId/comments",
+      "/:tripId/comments",
       this.controller.getAllComments.bind(this.controller)
     );
     router.post(
