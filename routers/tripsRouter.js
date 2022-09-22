@@ -15,7 +15,9 @@ class TripsRouter {
       this.controller.getAllTrips.bind(this.controller)
     );
     //add trip POST
+    router.post("/", this.controller.insertOneTrip.bind(this.controller));
     // delete trip DELETE
+    router.delete("/:tripId", this.controller.deleteTrip.bind(this.controller));
 
     // GET ALL INFO FROM ONE SINGLE TRIP : info like users
     router.get("/:tripId", this.controller.getOneTrip.bind(this.controller));
@@ -56,6 +58,18 @@ class TripsRouter {
     router.get(
       "/:tripId/users/:userId/comments",
       this.controller.getAllComments.bind(this.controller)
+    );
+    router.post(
+      "/:tripId/comments",
+      this.controller.addComment.bind(this.controller)
+    );
+    // router.put(
+    //   "/:tripId/comments",
+    //   this.controller.updateComment.bind(this.controller)
+    // );
+    router.delete(
+      "/:tripId/comments",
+      this.controller.deleteComment.bind(this.controller)
     );
 
     return router;

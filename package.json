@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/starstormfall/3P-Full-Stack-App-BE#readme",
   "devDependencies": {
+    "nodemon": "^2.0.20",
     "sequelize-cli": "^6.4.1"
   }
 }

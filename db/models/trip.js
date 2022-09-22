@@ -11,9 +11,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsToMany(models.user, {
-        through: "user_trips",
+        through: "user_trip",
       });
       this.hasOne(models.wishlist);
+
+      this.hasMany(models.comment);
+
       this.belongsToMany(models.item, {
         through: "trip_items",
       });
@@ -25,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       startDate: DataTypes.DATE,
       endDate: DataTypes.DATE,
       duration: DataTypes.INTEGER,
+      // userId: DataTypes.INTEGER,
     },
     {
       sequelize,
