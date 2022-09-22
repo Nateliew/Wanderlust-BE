@@ -5,16 +5,20 @@ class TripsController extends BaseController {
     model,
     userModel,
     userTripModel,
+    commentModel,
     itemModel,
     tripItemModel,
-    commentModel
+    wishListModel,
+    calendarModel
   ) {
     super(model);
-    this.userTripModel = userTripModel;
     this.userModel = userModel;
+    this.userTripModel = userTripModel;
     this.commentModel = commentModel;
     this.itemModel = itemModel;
     this.tripItemModel = tripItemModel;
+    this.wishListModel = wishListModel;
+    this.calendarModel = calendarModel;
   }
 
   // CRUD for all trips belonging to a user
