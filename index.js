@@ -3,7 +3,6 @@ const express = require("express");
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swagger_output.json");
 const { auth } = require("express-oauth2-jwt-bearer");
-
 require("dotenv").config();
 
 // import routers
@@ -43,7 +42,8 @@ require("dotenv").config();
 
 const PORT = process.env.PORT;
 const app = express();
-const router = require("./routers/routes");
+const router = require("./routers/routes")(auth, express);
+
 // Enable CORS access to this server
 app.use(cors());
 
@@ -53,9 +53,10 @@ app.use(express.json());
 // app.use("/trips", tripsRouter);
 // app.use("/items-catalog", packItemsRouter);
 // app.use("/users", usersRouter);
-
+app.use(auth());
 app.use(router);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
+// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);

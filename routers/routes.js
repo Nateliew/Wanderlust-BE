@@ -1,58 +1,66 @@
-const express = require("express");
-// const ToolsController = require("./controllers/ToolsController");
+// const express = require("express");
 
-const router = express.Router();
+// require("dotenv").config();
 
-// import controllers
-const TripsController = require("../controllers/tripsController");
-const PackItemsController = require("../controllers/packItemsController");
-const UsersController = require("../controllers/usersController");
+// // const ToolsController = require("./controllers/ToolsController");
 
-// const apiV1 = require("./controllers/ApiRoute1");
-// const apiV2 = require("./controllers/ApiRoute2");
+// const router = express.Router();
 
-// import DB
-const db = require("../db/models/index");
+// // import controllers
+// const TripsController = require("../controllers/tripsController");
+// const PackItemsController = require("../controllers/packItemsController");
+// const UsersController = require("../controllers/usersController");
 
-const { user, trip, user_trip, item, trip_item, comment, wishlist, calendar } =
-  db;
+// // const apiV1 = require("./controllers/ApiRoute1");
+// // const apiV2 = require("./controllers/ApiRoute2");
 
-// initialize controllers
-const tripsController = new TripsController(
-  trip,
-  user,
-  user_trip,
-  item,
-  trip_item,
-  comment,
-  wishlist,
-  calendar
-);
-const packItemsController = new PackItemsController(item);
-const usersController = new UsersController(user);
+// // import DB
+// const db = require("../db/models/index");
 
-// import routers
-const TripsRouter = require("./tripsRouter");
-const PackItemsRouter = require("./packItemsRouter");
-const UsersRouter = require("./usersRouter");
+// const { user, trip, user_trip, item, trip_item, comment, wishlist, calendar } =
+//   db;
 
-// initialize routers
-const tripsRouter = new TripsRouter(tripsController).routes();
-const packItemsRouter = new PackItemsRouter(packItemsController).routes();
-const usersRouter = new UsersRouter(usersController).routes();
+// // initialize controllers
+// const tripsController = new TripsController(
+//   trip,
+//   user,
+//   user_trip,
+//   item,
+//   trip_item,
+//   comment,
+//   wishlist,
+//   calendar
+// );
+// const packItemsController = new PackItemsController(item);
+// const usersController = new UsersController(user);
 
-// const usersRouter = new UsersRouter(usersController);
-// const usersRouterRoutes = () => {
-//   const UsersController = require("../controllers/usersController");
-//   const usersController = new UsersController(user);
-//   const UsersRouter = require("./usersRouter");
-//   const usersRouter = new UsersRouter(usersController);
-//   return usersRouter.routes();
-// };
+// // import routers
+// const TripsRouter = require("./tripsRouter");
+// const PackItemsRouter = require("./packItemsRouter");
+// const UsersRouter = require("./usersRouter");
 
-router.use("/trips", tripsRouter);
-router.use("/items-catalog", packItemsRouter);
-router.use("/users", usersRouter);
+// // initialize routers
+// const tripsRouter = new TripsRouter(tripsController).routes();
+// const packItemsRouter = new PackItemsRouter(packItemsController).routes();
+// const usersRouter = new UsersRouter(usersController).routes();
+
+// // const usersRouter = new UsersRouter(usersController);
+// // const usersRouterRoutes = () => {
+// //   const UsersController = require("../controllers/usersController");
+// //   const usersController = new UsersController(user);
+// //   const UsersRouter = require("./usersRouter");
+// //   const usersRouter = new UsersRouter(usersController);
+// //   return usersRouter.routes();
+// // };
+
+// const checkJwt = auth({
+//   audience: process.env.AUDIENCE,
+//   issuerBaseURL: process.env.ISSUER_BASE_URL,
+// });
+
+// router.use("/trips", auth(), tripsRouter);
+// router.use("/items-catalog", packItemsRouter);
+// router.use("/users", usersRouter);
 
 // router.get("/test-get", ToolsController.show);
 // router.post("/test-post", store);
@@ -63,4 +71,76 @@ router.use("/users", usersRouter);
 //   return res.status(201).send({});
 // }
 
-module.exports = router;
+module.exports = function (auth, express) {
+  require("dotenv").config();
+
+  // const ToolsController = require("./controllers/ToolsController");
+
+  const router = express.Router();
+
+  // import controllers
+  const TripsController = require("../controllers/tripsController");
+  const PackItemsController = require("../controllers/packItemsController");
+  const UsersController = require("../controllers/usersController");
+
+  // const apiV1 = require("./controllers/ApiRoute1");
+  // const apiV2 = require("./controllers/ApiRoute2");
+
+  // import DB
+  const db = require("../db/models/index");
+
+  const {
+    user,
+    trip,
+    user_trip,
+    item,
+    trip_item,
+    comment,
+    wishlist,
+    calendar,
+  } = db;
+
+  // initialize controllers
+  const tripsController = new TripsController(
+    trip,
+    user,
+    user_trip,
+    item,
+    trip_item,
+    comment,
+    wishlist,
+    calendar
+  );
+  const packItemsController = new PackItemsController(item);
+  const usersController = new UsersController(user);
+
+  // import routers
+  const TripsRouter = require("./tripsRouter");
+  const PackItemsRouter = require("./packItemsRouter");
+  const UsersRouter = require("./usersRouter");
+
+  // initialize routers
+  const tripsRouter = new TripsRouter(tripsController).routes();
+  const packItemsRouter = new PackItemsRouter(packItemsController).routes();
+  const usersRouter = new UsersRouter(usersController).routes();
+
+  // const usersRouter = new UsersRouter(usersController);
+  // const usersRouterRoutes = () => {
+  //   const UsersController = require("../controllers/usersController");
+  //   const usersController = new UsersController(user);
+  //   const UsersRouter = require("./usersRouter");
+  //   const usersRouter = new UsersRouter(usersController);
+  //   return usersRouter.routes();
+  // };
+
+  const checkJwt = auth({
+    audience: process.env.AUDIENCE,
+    issuerBaseURL: process.env.ISSUER_BASE_URL,
+  });
+
+  router.use("/trips", checkJwt, tripsRouter);
+  router.use("/items-catalog", checkJwt, packItemsRouter);
+  router.use("/users", checkJwt, usersRouter);
+
+  return router;
+};

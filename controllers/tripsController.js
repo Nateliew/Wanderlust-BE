@@ -1,4 +1,5 @@
 const BaseController = require("./baseController");
+const sequelize = require("sequelize");
 
 class TripsController extends BaseController {
   constructor(
@@ -119,6 +120,7 @@ class TripsController extends BaseController {
           userId: userId,
         },
         raw: true,
+        order: sequelize.col("column_index"),
       });
 
       // DO FOR LOOP TO MAKE INTO COLUMNS DATA STRUCTURE
@@ -153,10 +155,25 @@ class TripsController extends BaseController {
 
       console.log("columndata", columnData);
       // console.log("ITEMS:", items);
-      return res.json(items);
+      return res.json({ items: items, column: columnData });
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
+  }
+
+  async getSharedItems(req, res) {
+    const { tripId } = req.params;
+    try {
+      const sharedItems = await this.tripItemModel.findAll({
+        where: {
+          tripId: tripId,
+          sharedItem: true,
+        },
+        raw: true,
+        order: sequelize.col(columnIndex),
+      });
+      return res.json(sharedItems);
+    } catch (err) {}
   }
 
   async addPackItem(req, res) {

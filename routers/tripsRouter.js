@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 class TripsRouter {
-  constructor(controller) {
+  constructor(controller, auth) {
     this.controller = controller;
+    this.auth = auth;
   }
 
   routes() {
@@ -25,20 +26,26 @@ class TripsRouter {
 
     //CRUD for packing list
     router.get(
-      "/:tripId/users/:userId/packing-list",
+      "/:tripId/packing-list/users/:userId",
       this.controller.getAllPackItems.bind(this.controller)
     );
 
+    // for shared bag
+    router.get(
+      "/:tripId/packing-list/shared/",
+      this.controller.getSharedItems.bind(this.controller)
+    );
+
     router.post(
-      "/:tripId/users/:userId/packing-list",
+      "/:tripId/packing-list/users/:userId",
       this.controller.addPackItem.bind(this.controller)
     );
     router.put(
-      "/:tripId/users/:userId/packing-list",
+      "/:tripId/packing-list/users/:userId",
       this.controller.editPackItem.bind(this.controller)
     );
     router.delete(
-      "/:tripId/users/:userId/packing-list",
+      "/:tripId/packing-list/users/:userId",
       this.controller.removePackItem.bind(this.controller)
     );
 
