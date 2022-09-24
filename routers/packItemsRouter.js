@@ -10,7 +10,7 @@ class PackItemsRouter {
     router.get("/", this.controller.getAll);
     router.post("/", this.controller.insertOne);
     router.delete("/", this.controller.deleteOne);
-    router.get("/by-category", this.controller.getAllByCat);
+    // router.get("/by-category", this.controller.getAllByCat);
 
     return router;
   }

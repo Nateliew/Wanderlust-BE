@@ -53,7 +53,7 @@ app.use(express.json());
 // app.use("/trips", tripsRouter);
 // app.use("/items-catalog", packItemsRouter);
 // app.use("/users", usersRouter);
-app.use(auth());
+// app.use(auth());
 app.use(router);
 
 // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));

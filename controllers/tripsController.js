@@ -111,7 +111,7 @@ class TripsController extends BaseController {
     }
   }
   // CRUD for all packing list items belonging to a user
-  async getAllPackItems(req, res) {
+  async getAllUserPackItems(req, res) {
     const { tripId, userId } = req.params;
     try {
       const items = await this.tripItemModel.findAll({
@@ -123,6 +123,7 @@ class TripsController extends BaseController {
         order: sequelize.col("column_index"),
       });
 
+      console.log("items:", items);
       // DO FOR LOOP TO MAKE INTO COLUMNS DATA STRUCTURE
       //   "bagType": {
       //     id: "bagType",
@@ -130,32 +131,42 @@ class TripsController extends BaseController {
       //   },
       // console.log("ITEMS:", items);
       const columnData = {};
+      const sharedItemsUids = [];
 
       for (let itemRow of items) {
-        console.log("itemRow", itemRow.bagType);
-        console.log("itemUid", itemRow.itemUid);
-        if (columnData[itemRow.bagType]) {
-          console.log("did this run?");
-          columnData[itemRow.bagType] = {
-            ...columnData[itemRow.bagType],
-            id: itemRow.bagType,
-            itemsUids: [
-              ...columnData[itemRow.bagType].itemsUids,
-              itemRow.itemUid,
-            ],
-          };
+        const itemIdInfo = { [itemRow.itemUid]: itemRow.itemId };
+        if (itemRow.bagType === "shared") {
+          sharedItemsUids.push(itemIdInfo);
         } else {
-          console.log("or did this run?");
-          columnData[itemRow.bagType] = {
-            id: itemRow.bagType,
-            itemsUids: [itemRow.itemUid],
-          };
+          if (columnData[itemRow.bagType]) {
+            columnData[itemRow.bagType] = {
+              ...columnData[itemRow.bagType],
+              id: itemRow.bagType,
+              itemsUids: [...columnData[itemRow.bagType].itemsUids, itemIdInfo],
+            };
+          } else {
+            columnData[itemRow.bagType] = {
+              id: itemRow.bagType,
+              itemsUids: [itemIdInfo],
+            };
+          }
         }
       }
 
+      const sharedColumnData = {
+        shared: {
+          id: "shared",
+          itemsUids: sharedItemsUids,
+        },
+      };
+
       console.log("columndata", columnData);
       // console.log("ITEMS:", items);
-      return res.json({ items: items, column: columnData });
+      return res.json({
+        items: items,
+        column: columnData,
+        sharedColumn: sharedColumnData,
+      });
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }

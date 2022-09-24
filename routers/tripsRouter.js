@@ -27,7 +27,7 @@ class TripsRouter {
     //CRUD for packing list
     router.get(
       "/:tripId/packing-list/users/:userId",
-      this.controller.getAllPackItems.bind(this.controller)
+      this.controller.getAllUserPackItems.bind(this.controller)
     );
 
     // for shared bag
@@ -83,32 +83,4 @@ class TripsRouter {
   }
 }
 
-function getRouter() {
-  const db = require("../db/models/index");
-  const {
-    user,
-    trip,
-    user_trip,
-    item,
-    trip_item,
-    comment,
-    wishlist,
-    calendar,
-  } = db;
-  const TripsController = require("../controllers/tripsController");
-  const tripsController = new TripsController(
-    trip,
-    user,
-    user_trip,
-    item,
-    trip_item,
-    comment,
-    wishlist,
-    calendar
-  );
-  const tripsRouter = new TripsRouter(tripsController).routes();
-  return tripsRouter;
-}
-
-module.exports = getRouter;
 module.exports = TripsRouter;
