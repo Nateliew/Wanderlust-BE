@@ -133,14 +133,14 @@ module.exports = function (auth, express) {
   //   return usersRouter.routes();
   // };
 
-  const checkJwt = auth({
-    audience: process.env.AUDIENCE,
-    issuerBaseURL: process.env.ISSUER_BASE_URL,
-  });
+  // const checkJwt = auth({
+  //   audience: process.env.AUDIENCE,
+  //   issuerBaseURL: process.env.ISSUER_BASE_URL,
+  // });
 
-  router.use("/trips", checkJwt, tripsRouter);
-  router.use("/items-catalog", checkJwt, packItemsRouter);
-  router.use("/users", checkJwt, usersRouter);
+  router.use("/trips", tripsRouter);
+  router.use("/items-catalog", packItemsRouter);
+  router.use("/users", usersRouter);
 
   return router;
 };
