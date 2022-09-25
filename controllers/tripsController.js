@@ -257,21 +257,19 @@ class TripsController extends BaseController {
 
   async editPackItem(req, res) {
     // structure of tripItems: array of objects - {tripItemId, quantity, bagType, sharedItem, userId, tripId }
-    const { tripItems } = req.body;
+    const { itemUid, columnIndex, bagType } = req.body;
+    console.log("editPack", req.body);
 
     try {
-      tripItems.forEach(async (tripItemRow) => {
-        const tripItem = await this.tripItemModel.findByPk(
-          tripItemRow.tripItemId
-        );
-        tripItem.set({
-          quantity: tripItemRow.quantity,
-          bagType: tripItemRow.bagType,
-          sharedItem: tripItemRow.sharedItem,
-          userId: tripItemRow.userId,
-        });
-        await tripItem.save();
+      const tripItem = await this.tripItemModel.findOne({
+        where: { itemUid: itemUid },
       });
+      tripItem.set({
+        columnIndex: columnIndex,
+        bagType: bagType,
+      });
+      await tripItem.save();
+
       return res.json();
     } catch (err) {
       console.log(err);
@@ -281,17 +279,28 @@ class TripsController extends BaseController {
 
   async removePackItem(req, res) {
     // tripItemIds is an array of tripItemsPK
-    const { itemUid } = req.body;
+    const { itemUid, bagType } = req.body;
     const { tripId, userId } = req.params;
 
-    console.log(itemUid);
+    console.log(req.body);
 
     try {
-      const tripItems = await this.tripItemModel.destroy({
-        where: {
-          itemUid: itemUid,
-        },
-      });
+      console.log("did this run?");
+      if (itemUid !== undefined) {
+        console.log("or did this run?");
+        var tripItems = await this.tripItemModel.destroy({
+          where: {
+            itemUid: itemUid,
+          },
+        });
+      } else if (bagType) {
+        tripItems = await this.tripItemModel.destroy({
+          where: {
+            bagType: bagType,
+          },
+        });
+      }
+
       // HACK: REPEAT CODE FROM GET ALL SO THAT FRONTEND CAN UPDATE COLUMN ORDER
       const items = await this.tripItemModel.findAll({
         where: {
