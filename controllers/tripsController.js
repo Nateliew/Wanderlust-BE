@@ -204,7 +204,52 @@ class TripsController extends BaseController {
         itemUid: itemUid,
         columnIndex: columnIndex,
       });
-      return res.json(newList);
+
+      // HACK: REPEAT CODE FROM GET ALL SO THAT FRONTEND CAN UPDATE COLUMN ORDER
+      const items = await this.tripItemModel.findAll({
+        where: {
+          tripId: tripId,
+          userId: userId,
+        },
+        raw: true,
+        order: sequelize.col("column_index"),
+      });
+
+      const columnData = {};
+      const sharedItemsUids = [];
+
+      for (let itemRow of items) {
+        const itemIdInfo = { [itemRow.itemUid]: itemRow.itemId };
+        if (itemRow.bagType === "shared") {
+          sharedItemsUids.push(itemIdInfo);
+        } else {
+          if (columnData[itemRow.bagType]) {
+            columnData[itemRow.bagType] = {
+              ...columnData[itemRow.bagType],
+              id: itemRow.bagType,
+              itemsUids: [...columnData[itemRow.bagType].itemsUids, itemIdInfo],
+            };
+          } else {
+            columnData[itemRow.bagType] = {
+              id: itemRow.bagType,
+              itemsUids: [itemIdInfo],
+            };
+          }
+        }
+      }
+
+      const sharedColumnData = {
+        shared: {
+          id: "shared",
+          itemsUids: sharedItemsUids,
+        },
+      };
+
+      return res.json({
+        newList: newList,
+        column: columnData,
+        sharedColumn: sharedColumnData,
+      });
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
