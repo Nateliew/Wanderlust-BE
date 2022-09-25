@@ -281,18 +281,62 @@ class TripsController extends BaseController {
 
   async removePackItem(req, res) {
     // tripItemIds is an array of tripItemsPK
-    const { tripItemIds } = req.body;
-    console.log(tripItemIds);
+    const { itemUid } = req.body;
+    const { tripId, userId } = req.params;
+
+    console.log(itemUid);
 
     try {
       const tripItems = await this.tripItemModel.destroy({
         where: {
-          id: tripItemIds,
+          itemUid: itemUid,
         },
       });
+      // HACK: REPEAT CODE FROM GET ALL SO THAT FRONTEND CAN UPDATE COLUMN ORDER
+      const items = await this.tripItemModel.findAll({
+        where: {
+          tripId: tripId,
+          userId: userId,
+        },
+        raw: true,
+        order: sequelize.col("column_index"),
+      });
 
+      const columnData = {};
+      const sharedItemsUids = [];
+
+      for (let itemRow of items) {
+        const itemIdInfo = { [itemRow.itemUid]: itemRow.itemId };
+        if (itemRow.bagType === "shared") {
+          sharedItemsUids.push(itemIdInfo);
+        } else {
+          if (columnData[itemRow.bagType]) {
+            columnData[itemRow.bagType] = {
+              ...columnData[itemRow.bagType],
+              id: itemRow.bagType,
+              itemsUids: [...columnData[itemRow.bagType].itemsUids, itemIdInfo],
+            };
+          } else {
+            columnData[itemRow.bagType] = {
+              id: itemRow.bagType,
+              itemsUids: [itemIdInfo],
+            };
+          }
+        }
+      }
+
+      const sharedColumnData = {
+        shared: {
+          id: "shared",
+          itemsUids: sharedItemsUids,
+        },
+      };
       // returned tripItems is an integer of total rows deleted
-      return res.json(tripItems);
+      return res.json({
+        tripItems: tripItems,
+        column: columnData,
+        sharedColumn: sharedColumnData,
+      });
     } catch (err) {
       console.log(err);
       return res.status(400).json({ error: true, msg: err });
