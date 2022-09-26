@@ -100,10 +100,21 @@ class TripsController extends BaseController {
           tripId: Number(tripId),
         },
       });
-      let res = await this.model.destroy({
+      let response = await this.model.destroy({
         where: {
           id: Number(tripId),
         },
+      });
+      const trips = await this.model.findAll({
+        include: [
+          {
+            model: this.userModel,
+            where: {
+              id: userId,
+            },
+            through: { attributes: [] },
+          },
+        ],
       });
       console.log(res);
     } catch (e) {
@@ -363,6 +374,7 @@ class TripsController extends BaseController {
   async addComment(req, res) {
     console.log("AddComment", req.params);
     const { tripId } = req.params;
+    console.log(req.params, req.body);
     const { user_id, content } = req.body;
     try {
       const newComment = await this.commentModel.create({
@@ -371,6 +383,7 @@ class TripsController extends BaseController {
         user_id: user_id,
       });
       return res.json(newComment);
+      console.log(newComment);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
@@ -391,16 +404,21 @@ class TripsController extends BaseController {
   }
 
   async deleteComment(req, res) {
-    const { commentId } = req.body;
+    const { commentId, tripId } = req.body;
     console.log(req.body);
     console.log(commentId);
     try {
-      let res = await this.commentModel.destroy({
+      let response = await this.commentModel.destroy({
         where: {
           id: Number(commentId),
         },
       });
-      console.log(res);
+      const comments = await this.commentModel.findAll({
+        where: {
+          tripId: Number(tripId),
+        },
+      });
+      return res.json(comments);
     } catch (e) {
       return false;
     }
