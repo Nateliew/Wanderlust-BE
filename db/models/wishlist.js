@@ -10,7 +10,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.trip);
-      this.belongsTo(models.calendar);
     }
   }
   Wishlist.init(

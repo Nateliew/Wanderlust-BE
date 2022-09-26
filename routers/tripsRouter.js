@@ -54,9 +54,15 @@ class TripsRouter {
       "/:tripId/wishlist",
       this.controller.getAllWishlistItems.bind(this.controller)
     );
+
     router.post(
       "/:tripId/wishlist",
       this.controller.addWishlistItem.bind(this.controller)
+    );
+
+    router.delete(
+      "/:tripId/wishlist",
+      this.controller.removeWishlistItem.bind(this.controller)
     );
 
     //CRUD for calendar
