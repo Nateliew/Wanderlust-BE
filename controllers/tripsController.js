@@ -364,7 +364,66 @@ class TripsController extends BaseController {
   }
 
   //CRUD for wishlist
-  async getAllWishlistItems(req, res) {}
+  async getAllWishlistItems(req, res) {
+    const { tripId } = req.params;
+    console.log(tripId, req.params, "trip id in get all wl items");
+    try {
+      const wishlistItems = await this.wishListModel.findAll({
+        where: {
+          tripId: Number(tripId),
+        },
+      });
+      console.log(wishlistItems, "wishlist items in get all");
+      return res.json(wishlistItems);
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
+
+  async addWishlistItem(req, res) {
+    console.log("Add wishlist item", req.params, req.body);
+    const { tripId } = req.params;
+    const { placeName } = req.body;
+    console.log(
+      placeName,
+      tripId,
+      req.params,
+      req.body,
+      "place name, tripid, req params, body"
+    );
+    try {
+      console.log("helo in add wishlist item", placeName, req.body);
+      const newItem = await this.wishListModel.create({
+        placeName: placeName,
+        tripId: tripId,
+      });
+      return res.json(newItem);
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
+
+  async removeWishlistItem(req, res) {
+    const { placeName } = req.body;
+    console.log(req.body);
+    try {
+      let res = await this.wishListModel.destroy({
+        where: {
+          place_name: req.body.place_name,
+        },
+      });
+      const data = await this.wishListModel.findAll({
+        where: {
+          tripId: Number(tripId),
+        },
+      });
+      return res.json(data);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ error: true, msg: error });
+    }
+  }
+
   //CRUD for calendar
   async getAllCalendarItems(req, res) {}
 
