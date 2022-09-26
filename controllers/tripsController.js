@@ -353,7 +353,38 @@ class TripsController extends BaseController {
   }
 
   //CRUD for wishlist
-  async getAllWishlistItems(req, res) {}
+  async getAllWishlistItems(req, res) {
+    const { tripId } = req.params;
+    try {
+      const wishlistItems = await this.wishListModel.findAll({
+        where: {
+          tripId: Number(tripId),
+        },
+      });
+      console.log(res.json(wishlistItems), "wishlist items");
+      return res.json(wishlistItems);
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
+
+  async addWishlistItem(req, res) {
+    console.log("Add wishlist item", req.params, req.body);
+    const { tripId } = req.params;
+    const { placeName } = req.body;
+    console.log(placeName, tripId, "place name and tripid");
+    try {
+      console.log("helo in add wishlist item", this.wishListModel);
+      const newItem = await this.wishListModel.create({
+        placeName: placeName,
+        tripId: tripId,
+      });
+      return res.json(newItem);
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
+
   //CRUD for calendar
   async getAllCalendarItems(req, res) {}
 

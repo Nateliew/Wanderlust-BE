@@ -15,14 +15,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   Wishlist.init(
     {
-      trip_id: {
+      tripId: {
         type: DataTypes.INTEGER,
         references: {
           model: "trips",
           key: "id",
         },
       },
-      place_name: DataTypes.STRING,
+      placeName: DataTypes.STRING,
       description: DataTypes.STRING,
       recommendation: DataTypes.STRING,
       category: DataTypes.STRING,
