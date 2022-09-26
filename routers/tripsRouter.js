@@ -74,10 +74,7 @@ class TripsRouter {
       "/:tripId/comments",
       this.controller.addComment.bind(this.controller)
     );
-    // router.put(
-    //   "/:tripId/comments",
-    //   this.controller.updateComment.bind(this.controller)
-    // );
+
     router.delete(
       "/:tripId/comments",
       this.controller.deleteComment.bind(this.controller)
