@@ -407,9 +407,9 @@ class TripsController extends BaseController {
     const { placeName } = req.body;
     console.log(req.body);
     try {
-      let res = await this.wishListModel.destroy({
+      let response = await this.wishListModel.destroy({
         where: {
-          place_name: req.body.place_name,
+          place_name: placeName,
         },
       });
       const data = await this.wishListModel.findAll({
