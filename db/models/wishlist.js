@@ -10,19 +10,18 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.trip);
-      // this.belongsTo(models.calendar);
     }
   }
   Wishlist.init(
     {
-      trip_id: {
+      tripId: {
         type: DataTypes.INTEGER,
         references: {
           model: "trips",
           key: "id",
         },
       },
-      place_name: DataTypes.STRING,
+      placeName: DataTypes.STRING,
       description: DataTypes.STRING,
       recommendation: DataTypes.STRING,
       category: DataTypes.STRING,

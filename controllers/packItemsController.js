@@ -24,7 +24,6 @@ class PackItemsController extends BaseController {
 
         itemsMap[item.id] = item;
       }
-      console.log("2:", itemByCategory);
       // render items column for matching of itemIds
       const itemsIds = [];
       allItems.forEach((item) => {
@@ -48,7 +47,8 @@ class PackItemsController extends BaseController {
 
   insertOne = async (req, res) => {
     const { itemName } = req.body;
-
+    console.log("itemName: ", req.body);
+    console.log("itemName: ", itemName);
     try {
       const newItem = await this.model.create({
         itemName: itemName,
