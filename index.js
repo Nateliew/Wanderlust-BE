@@ -15,7 +15,11 @@ app.use(cors());
 // Enable reading JSON request bodies
 app.use(express.json());
 
-app.use(auth());
+// app.use("/trips", tripsRouter);
+// app.use("/items-catalog", packItemsRouter);
+// app.use("/users", usersRouter);
+// app.use(auth());
+
 app.use(router);
 
 app.listen(PORT, () => {

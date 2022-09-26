@@ -100,10 +100,21 @@ class TripsController extends BaseController {
           tripId: Number(tripId),
         },
       });
-      let res = await this.model.destroy({
+      let response = await this.model.destroy({
         where: {
           id: Number(tripId),
         },
+      });
+      const trips = await this.model.findAll({
+        include: [
+          {
+            model: this.userModel,
+            where: {
+              id: userId,
+            },
+            through: { attributes: [] },
+          },
+        ],
       });
       console.log(res);
     } catch (e) {
@@ -111,7 +122,7 @@ class TripsController extends BaseController {
     }
   }
   // CRUD for all packing list items belonging to a user
-  async getAllPackItems(req, res) {
+  async getAllUserPackItems(req, res) {
     const { tripId, userId } = req.params;
     try {
       const items = await this.tripItemModel.findAll({
@@ -123,6 +134,7 @@ class TripsController extends BaseController {
         order: sequelize.col("column_index"),
       });
 
+      console.log("items:", items);
       // DO FOR LOOP TO MAKE INTO COLUMNS DATA STRUCTURE
       //   "bagType": {
       //     id: "bagType",
@@ -130,32 +142,42 @@ class TripsController extends BaseController {
       //   },
       // console.log("ITEMS:", items);
       const columnData = {};
+      const sharedItemsUids = [];
 
       for (let itemRow of items) {
-        console.log("itemRow", itemRow.bagType);
-        console.log("itemUid", itemRow.itemUid);
-        if (columnData[itemRow.bagType]) {
-          console.log("did this run?");
-          columnData[itemRow.bagType] = {
-            ...columnData[itemRow.bagType],
-            id: itemRow.bagType,
-            itemsUids: [
-              ...columnData[itemRow.bagType].itemsUids,
-              itemRow.itemUid,
-            ],
-          };
+        const itemIdInfo = { [itemRow.itemUid]: itemRow.itemId };
+        if (itemRow.bagType === "shared") {
+          sharedItemsUids.push(itemIdInfo);
         } else {
-          console.log("or did this run?");
-          columnData[itemRow.bagType] = {
-            id: itemRow.bagType,
-            itemsUids: [itemRow.itemUid],
-          };
+          if (columnData[itemRow.bagType]) {
+            columnData[itemRow.bagType] = {
+              ...columnData[itemRow.bagType],
+              id: itemRow.bagType,
+              itemsUids: [...columnData[itemRow.bagType].itemsUids, itemIdInfo],
+            };
+          } else {
+            columnData[itemRow.bagType] = {
+              id: itemRow.bagType,
+              itemsUids: [itemIdInfo],
+            };
+          }
         }
       }
 
+      const sharedColumnData = {
+        shared: {
+          id: "shared",
+          itemsUids: sharedItemsUids,
+        },
+      };
+
       console.log("columndata", columnData);
       // console.log("ITEMS:", items);
-      return res.json({ items: items, column: columnData });
+      return res.json({
+        items: items,
+        column: columnData,
+        sharedColumn: sharedColumnData,
+      });
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
@@ -254,6 +276,7 @@ class TripsController extends BaseController {
   async addComment(req, res) {
     console.log("AddComment", req.params);
     const { tripId } = req.params;
+    console.log(req.params, req.body);
     const { user_id, content } = req.body;
     try {
       const newComment = await this.commentModel.create({
@@ -262,6 +285,7 @@ class TripsController extends BaseController {
         user_id: user_id,
       });
       return res.json(newComment);
+      console.log(newComment);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
@@ -282,16 +306,21 @@ class TripsController extends BaseController {
   }
 
   async deleteComment(req, res) {
-    const { commentId } = req.body;
+    const { commentId, tripId } = req.body;
     console.log(req.body);
     console.log(commentId);
     try {
-      let res = await this.commentModel.destroy({
+      let response = await this.commentModel.destroy({
         where: {
           id: Number(commentId),
         },
       });
-      console.log(res);
+      const comments = await this.commentModel.findAll({
+        where: {
+          tripId: Number(tripId),
+        },
+      });
+      return res.json(comments);
     } catch (e) {
       return false;
     }

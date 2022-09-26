@@ -48,14 +48,9 @@ module.exports = function (auth, express) {
   const packItemsRouter = new PackItemsRouter(packItemsController).routes();
   const usersRouter = new UsersRouter(usersController).routes();
 
-  const checkJwt = auth({
-    audience: "https://travel/api",
-    issuerBaseURL: "https://dev-owrmeqco.us.auth0.com/",
-  });
-
-  router.use("/trips", checkJwt, tripsRouter);
-  router.use("/items-catalog", checkJwt, packItemsRouter);
-  router.use("/users", checkJwt, usersRouter);
+  router.use("/trips", tripsRouter);
+  router.use("/items-catalog", packItemsRouter);
+  router.use("/users", usersRouter);
 
   return router;
 };

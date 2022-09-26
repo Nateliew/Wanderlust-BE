@@ -1,21 +1,36 @@
 const BaseController = require("./baseController");
 
 class UsersController extends BaseController {
-  constructor(model, userModel) {
+  constructor(model) {
     super(model);
-    this.userModel = userModel;
   }
+  // async insertOneUser(req, res) {
+  //   console.log("Add user", req.body);
+  //   const { firstName, lastName, email } = req.body;
+  //   try {
+  //     const newUser = await this.model.create({
+  //       firstName: firstName,
+  //       lastName: lastName,
+  //       email: email,
+  //     });
+  //     // console.log(user.id);
+  //     return res.json(newUser);
+  //   } catch (err) {
+  //     return res.status(400).json({ error: true, msg: err });
+  //   }
+  // }
+
   async insertOneUser(req, res) {
-    console.log("Add user", req.body);
-    const { firstName, lastName, email } = req.body;
+    const { name, email } = req.body;
+    // console.log(req.body);
     try {
-      const newUser = await this.userModel.create({
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
+      const user = await this.model.findOrCreate({
+        where: { email: email },
+        defaults: {
+          firstName: name,
+        },
       });
-      // console.log(user.id);
-      return res.json(newUser);
+      return res.json(user);
     } catch (err) {
       return res.status(400).json({ error: true, msg: err });
     }
