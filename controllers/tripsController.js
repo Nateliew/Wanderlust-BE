@@ -121,6 +121,55 @@ class TripsController extends BaseController {
       return false;
     }
   }
+
+  async addUser(req, res) {
+    const { tripId } = req.params;
+    const { userEmail } = req.body;
+
+    try {
+      const findUser = await this.userModel.findAll({
+        where: {
+          email: userEmail,
+        },
+        raw: true,
+      });
+
+      console.log("FINDUSER", findUser);
+      const newUser = await this.userTripModel.create({
+        userId: findUser[0].id,
+        tripId: tripId,
+      });
+      const tripUsers = await this.userTripModel.findAll({
+        where: {
+          tripId: tripId,
+        },
+        raw: true,
+      });
+
+      return res.json(tripUsers);
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
+
+  async getTripUsers(req, res) {
+    const { tripId } = req.params;
+    console.log(tripId);
+    try {
+      const tripUsers = await this.userTripModel.findAll({
+        where: {
+          tripId: tripId,
+        },
+        raw: true,
+      });
+      console.log("trip users", tripUsers);
+
+      return res.json(tripUsers);
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
+
   // CRUD for all packing list items belonging to a user
   async getAllUserPackItems(req, res) {
     const { tripId, userId } = req.params;
