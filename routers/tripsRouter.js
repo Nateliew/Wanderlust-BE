@@ -24,6 +24,16 @@ class TripsRouter {
     router.get("/:tripId", this.controller.getOneTrip.bind(this.controller));
     // edit trip : PUT
 
+    router.post(
+      "/:tripId/add-user",
+      this.controller.addUser.bind(this.controller)
+    );
+
+    router.get(
+      "/:tripId/users",
+      this.controller.getTripUsers.bind(this.controller)
+    );
+
     //CRUD for packing list
     router.get(
       "/:tripId/packing-list/users/:userId",
