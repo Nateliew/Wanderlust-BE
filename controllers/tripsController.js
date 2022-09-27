@@ -454,6 +454,7 @@ class TripsController extends BaseController {
 
   async removeWishlistItem(req, res) {
     const { placeName } = req.body;
+    const { tripId } = req.params;
     console.log(req.body);
     try {
       let response = await this.wishListModel.destroy({

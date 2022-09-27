@@ -4,21 +4,6 @@ class UsersController extends BaseController {
   constructor(model) {
     super(model);
   }
-  // async insertOneUser(req, res) {
-  //   console.log("Add user", req.body);
-  //   const { firstName, lastName, email } = req.body;
-  //   try {
-  //     const newUser = await this.model.create({
-  //       firstName: firstName,
-  //       lastName: lastName,
-  //       email: email,
-  //     });
-  //     // console.log(user.id);
-  //     return res.json(newUser);
-  //   } catch (err) {
-  //     return res.status(400).json({ error: true, msg: err });
-  //   }
-  // }
 
   async insertOneUser(req, res) {
     const { name, email } = req.body;
